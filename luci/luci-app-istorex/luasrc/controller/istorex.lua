@@ -5,6 +5,9 @@ function index()
     if luci.sys.call("pgrep quickstart >/dev/null") == 0 then
         entry({"admin", "istorex"}, call("redirect_index"))
         entry({"admin", "istorex", "pages"}, call("istorex_template")).leaf = true
+        if nixio.fs.access("/usr/lib/lua/luci/view/istorex/main_dev.htm") then
+            entry({"admin", "istorex","dev"}, call("istorex_template_dev")).leaf = true
+        end
     else
         entry({"admin", "istorex"})
         entry({"admin", "istorex", "pages"}, call("redirect_fallback")).leaf = true
@@ -14,6 +17,12 @@ end
 function istorex_template()
     luci.template.render("istorex/main", {
         prefix=luci.dispatcher.build_url(unpack(page_index))
+    })
+end
+
+function istorex_template_dev()
+    luci.template.render("istorex/main_dev",{
+        prefix=luci.dispatcher.build_url(unpack({"admin", "istorex","dev"}))
     })
 end
 
